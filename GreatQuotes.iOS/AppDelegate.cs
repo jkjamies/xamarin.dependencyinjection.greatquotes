@@ -2,13 +2,16 @@
 using GreatQuotes.Data;
 using UIKit;
 
-namespace GreatQuotes.iOS {
+namespace GreatQuotes.iOS
+{
     // The UIApplicationDelegate for the application. This class is responsible for launching the 
     // User Interface of the application, as well as listening (and optionally responding) to 
     // application events from iOS.
     [Register("AppDelegate")]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
     {
+        readonly SimpleContainer container = new SimpleContainer();
+
         //
         // This method is invoked when the application has loaded and is ready to run. In this 
         // method you should instantiate the window, load the UI into it and then make the window
@@ -18,8 +21,9 @@ namespace GreatQuotes.iOS {
         //
         public override bool FinishedLaunching(UIApplication uiApplication, NSDictionary launchOptions)
         {
-            QuoteLoaderFactory.Create = () => new QuoteLoader();
-            ServiceLocator.Instance.Add<ITextToSpeech, TextToSpeechService>();
+            container.Register<IQuoteLoader, QuoteLoader>();
+            container.Register<ITextToSpeech, TextToSpeechService>();
+            container.Create<QuoteManager>();
 
             global::Xamarin.Forms.Forms.Init();
 
